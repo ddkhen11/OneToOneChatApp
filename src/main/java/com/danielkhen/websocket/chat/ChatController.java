@@ -1,6 +1,8 @@
 package com.danielkhen.websocket.chat;
 
+import com.danielkhen.websocket.exception.ChatRoomNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -30,17 +32,22 @@ public class ChatController {
      */
     @MessageMapping("/chat")
     public void processMessage(@Payload ChatMessage message) {
-        ChatMessage savedMessage = chatMessageService.save(message);
-        messagingTemplate.convertAndSendToUser(
-                savedMessage.getRecipientId(),
-                "/queue/messages",
-                ChatNotification.builder()
-                        .id(savedMessage.getId())
-                        .senderId(savedMessage.getSenderId())
-                        .recipientId(savedMessage.getRecipientId())
-                        .content(savedMessage.getContent())
-                        .build()
-        );
+        try {
+            ChatMessage savedMessage = chatMessageService.save(message);
+            messagingTemplate.convertAndSendToUser(
+                    savedMessage.getRecipientId(),
+                    "/queue/messages",
+                    ChatNotification.builder()
+                            .id(savedMessage.getId())
+                            .senderId(savedMessage.getSenderId())
+                            .recipientId(savedMessage.getRecipientId())
+                            .content(savedMessage.getContent())
+                            .build()
+            );
+        } catch (ChatRoomNotFoundException e) {
+            // Log the error and possibly send an error message back to the sender
+            System.err.println("Error processing message: " + e.getMessage());
+        }
     }
 
     /**
@@ -55,6 +62,13 @@ public class ChatController {
             @PathVariable("senderId") String senderId,
             @PathVariable("recipientId") String recipientId
     ) {
-        return ResponseEntity.ok(chatMessageService.findChatMessages(senderId, recipientId));
+        try {
+            List<ChatMessage> messages = chatMessageService.findChatMessages(senderId, recipientId);
+            return ResponseEntity.ok(messages);
+        } catch (Exception e) {
+            // Log the error
+            System.err.println("Error retrieving messages: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }
