@@ -7,37 +7,6 @@ This project is a real-time chat application built using Java, Spring Boot, and 
 - Real-time messaging using WebSocket
 - Persistent storage of user profiles, chat rooms, and message history
 
-## Project Structure
-```
-websocket
-├── docker-compose.yaml
-├── pom.xml
-└── src
-    ├── main
-    │   ├── java
-    │   │   └── com
-    │   │       └── danielkhen
-    │   │           └── websocket
-    │   │               ├── chat
-    │   │               ├── config
-    │   │               ├── user
-    │   │               ├── chatroom
-    │   │               ├── exception
-    │   │               └── WebsocketApplication.java
-    │   └── resources
-    │       ├── static
-    │       │   ├── index.html
-    │       │   ├── css
-    │       │   └── js
-    │       └── application.yml
-    └── test
-        └── java
-            └── com
-                └── danielkhen
-                    └── websocket
-                        └── WebsocketApplicationTests.java
-```
-
 ## Setup and Installation
 1. Ensure you have Java 17 and Maven installed on your system.
 2. Clone the repository:
