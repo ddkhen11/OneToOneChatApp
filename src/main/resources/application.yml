@@ -3,11 +3,7 @@ spring:
         name: websocket
     data:
         mongodb:
-            username: ${MONGODB_USERNAME}
-            password: ${MONGODB_PASSWORD}
-            host: ${MONGODB_HOST:localhost}
-            port: ${MONGODB_PORT:27017}
-            database: ${MONGODB_DATABASE:chat_app}
-            authentication-database: ${MONGODB_AUTH_DATABASE:admin}
+            uri: ${MONGODB_URI}
+            database: chat_app
 server:
     port: ${SERVER_PORT:8088}
