@@ -1,6 +1,8 @@
 package com.danielkhen.websocket.user;
 
+import com.danielkhen.websocket.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -29,8 +31,14 @@ public class UserController {
     @MessageMapping("/user.addUser")
     @SendTo("/user/public")
     public User addUser(@Payload User user) {
-        service.saveUser(user);
-        return user;
+        try {
+            service.saveUser(user);
+            return user;
+        } catch (Exception e) {
+            // Log the error
+            System.err.println("Error adding user: " + e.getMessage());
+            return null;
+        }
     }
 
     /**
@@ -42,8 +50,14 @@ public class UserController {
     @MessageMapping("/user.disconnectUser")
     @SendTo("/user/public")
     public User disconnect(@Payload User user) {
-        service.disconnect(user);
-        return user;
+        try {
+            service.disconnect(user);
+            return user;
+        } catch (UserNotFoundException e) {
+            // Log the error
+            System.err.println("Error disconnecting user: " + e.getMessage());
+            return null;
+        }
     }
 
     /**
@@ -53,6 +67,13 @@ public class UserController {
      */
     @GetMapping("/users")
     public ResponseEntity<List<User>> findConnectedUsers() {
-        return ResponseEntity.ok(service.findConnectedUsers());
+        try {
+            List<User> users = service.findConnectedUsers();
+            return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            // Log the error
+            System.err.println("Error retrieving connected users: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

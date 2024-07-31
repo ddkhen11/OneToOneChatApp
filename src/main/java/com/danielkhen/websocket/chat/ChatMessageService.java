@@ -1,6 +1,7 @@
 package com.danielkhen.websocket.chat;
 
 import com.danielkhen.websocket.chatroom.ChatRoomService;
+import com.danielkhen.websocket.exception.ChatRoomNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,13 +25,14 @@ public class ChatMessageService {
      *
      * @param chatMessage The message to be saved
      * @return The saved chat message
+     * @throws ChatRoomNotFoundException if the chat room cannot be found or created
      */
     public ChatMessage save(ChatMessage chatMessage) {
         var chatId = chatRoomService.getChatRoomId(
                 chatMessage.getSenderId(),
                 chatMessage.getRecipientId(),
                 true
-        ).orElseThrow();
+        ).orElseThrow(() -> new ChatRoomNotFoundException("Could not create or find chat room"));
         chatMessage.setChatId(chatId);
         return chatMessageRepository.save(chatMessage);
     }

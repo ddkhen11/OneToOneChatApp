@@ -1,5 +1,6 @@
 package com.danielkhen.websocket.user;
 
+import com.danielkhen.websocket.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,14 +30,13 @@ public class UserService {
      * Updates a user's status to OFFLINE when they disconnect.
      *
      * @param user The user who is disconnecting
+     * @throws UserNotFoundException if the user is not found
      */
     public void disconnect(User user) {
         var storedUser = repository.findById(user.getNickName())
-                .orElse(null);
-        if (storedUser != null) {
-            storedUser.setStatus(Status.OFFLINE);
-            repository.save(storedUser);
-        }
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + user.getNickName()));
+        storedUser.setStatus(Status.OFFLINE);
+        repository.save(storedUser);
     }
 
     /**
