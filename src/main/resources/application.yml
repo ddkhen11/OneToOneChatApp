@@ -7,7 +7,6 @@ spring:
             database: chat_app
 server:
     port: ${SERVER_PORT:8088}
-websocket:
-    jwt:
-        secret: ${JWT_SECRET}
-        expirationMs: 86400000
+jwt:
+    secret: ${JWT_SECRET}
+    expirationMs: 86400000
