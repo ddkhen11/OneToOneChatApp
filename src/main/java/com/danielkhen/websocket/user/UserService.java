@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository repository;
+    private final UserRepository userRepository;
 
     /**
      * Saves a new user or updates an existing user's status to ONLINE.
@@ -23,7 +23,7 @@ public class UserService {
      */
     public void saveUser(User user) {
         user.setStatus(Status.ONLINE);
-        repository.save(user);
+        userRepository.save(user);
     }
 
     /**
@@ -33,10 +33,10 @@ public class UserService {
      * @throws UserNotFoundException if the user is not found
      */
     public void disconnect(User user) {
-        var storedUser = repository.findById(user.getNickName())
+        var storedUser = userRepository.findById(user.getNickName())
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + user.getNickName()));
         storedUser.setStatus(Status.OFFLINE);
-        repository.save(storedUser);
+        userRepository.save(storedUser);
     }
 
     /**
@@ -45,6 +45,6 @@ public class UserService {
      * @return List of online users
      */
     public List<User> findConnectedUsers() {
-        return repository.findAllByStatus(Status.ONLINE);
+        return userRepository.findAllByStatus(Status.ONLINE);
     }
 }

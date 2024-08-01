@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService service;
+    private final UserService userService;
 
     /**
      * Handles user connection via WebSocket.
@@ -32,7 +32,7 @@ public class UserController {
     @SendTo("/user/public")
     public User addUser(@Payload User user) {
         try {
-            service.saveUser(user);
+            userService.saveUser(user);
             return user;
         } catch (Exception e) {
             // Log the error
@@ -51,7 +51,7 @@ public class UserController {
     @SendTo("/user/public")
     public User disconnect(@Payload User user) {
         try {
-            service.disconnect(user);
+            userService.disconnect(user);
             return user;
         } catch (UserNotFoundException e) {
             // Log the error
@@ -68,7 +68,7 @@ public class UserController {
     @GetMapping("/users")
     public ResponseEntity<List<User>> findConnectedUsers() {
         try {
-            List<User> users = service.findConnectedUsers();
+            List<User> users = userService.findConnectedUsers();
             return ResponseEntity.ok(users);
         } catch (Exception e) {
             // Log the error
