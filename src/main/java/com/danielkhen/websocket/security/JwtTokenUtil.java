@@ -72,13 +72,22 @@ public class JwtTokenUtil {
     }
 
     /**
+     * Gets the expiration time of the token in milliseconds.
+     *
+     * @return the expiration time in milliseconds
+     */
+    public long getExpirationTime() {
+        return expirationMs;
+    }
+
+    /**
      * Validates a token for a given user.
      *
      * @param token the JWT to validate
      * @param userDetails the user details to validate against
      * @return true if the token is valid for the given user, false otherwise
      */
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public Boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }

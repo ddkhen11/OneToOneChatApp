@@ -2,26 +2,38 @@ package com.danielkhen.websocket.user;
 
 import com.danielkhen.websocket.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * Service class for managing user operations.
- * Handles user connections, disconnections, and queries.
  */
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
-     * Saves a new user or updates an existing user's status to ONLINE.
+     * Saves a new user with an encoded password.
      *
      * @param user The user to save
      */
     public void saveUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+    }
+
+    /**
+     * Updates an existing user's status to ONLINE.
+     *
+     * @param user The user to save
+     */
+    public void updateUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setStatus(Status.ONLINE);
         userRepository.save(user);
     }

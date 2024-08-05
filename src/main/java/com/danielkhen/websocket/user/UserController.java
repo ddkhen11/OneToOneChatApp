@@ -35,7 +35,6 @@ public class UserController {
             userService.saveUser(user);
             return user;
         } catch (Exception e) {
-            // Log the error
             System.err.println("Error adding user: " + e.getMessage());
             return null;
         }
@@ -54,8 +53,7 @@ public class UserController {
             userService.disconnect(user);
             return user;
         } catch (UserNotFoundException e) {
-            // Log the error
-            System.err.println("Error disconnecting user: " + e.getMessage());
+            System.err.println("Error disconnecting user: " + user.getNickName());
             return null;
         }
     }
