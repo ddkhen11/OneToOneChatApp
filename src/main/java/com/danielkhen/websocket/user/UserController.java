@@ -32,7 +32,7 @@ public class UserController {
     @SendTo("/user/public")
     public User addUser(@Payload User user) {
         try {
-            userService.saveUser(user);
+            userService.updateUser(user);
             return user;
         } catch (Exception e) {
             System.err.println("Error adding user: " + e.getMessage());
