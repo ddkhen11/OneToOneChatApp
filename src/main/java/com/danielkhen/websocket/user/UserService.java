@@ -15,27 +15,29 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+//    private final PasswordEncoder passwordEncoder;
 
-    /**
-     * Saves a new user with an encoded password.
-     *
-     * @param user The user to save
-     */
-    public void saveUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-    }
+//    /**
+//     * Saves a new user with an encoded password.
+//     *
+//     * @param user The user to save
+//     */
+//    public void saveUser(User user) {
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        userRepository.save(user);
+//    }
 
     /**
      * Updates an existing user's status to ONLINE.
      *
      * @param user The user to save
+     * @throws UserNotFoundException if the user is not found
      */
     public void updateUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setStatus(Status.ONLINE);
-        userRepository.save(user);
+        var storedUser = userRepository.findById(user.getNickName())
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + user.getNickName()));
+        storedUser.setStatus(Status.ONLINE);
+        userRepository.save(storedUser);
     }
 
     /**

@@ -52,7 +52,6 @@ public class User implements UserDetails {
 
     /** The password of the user */
     @NotBlank
-    @Size(max = AppConstants.MAX_PASSWORD_LENGTH)
     private String password;
 
     /** The current status of the user (online/offline) */

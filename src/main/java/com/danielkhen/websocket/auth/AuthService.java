@@ -2,12 +2,14 @@ package com.danielkhen.websocket.auth;
 
 import com.danielkhen.websocket.dto.LoginRequestDTO;
 import com.danielkhen.websocket.dto.SignupRequestDTO;
+import com.danielkhen.websocket.exception.UserAlreadyExistsException;
 import com.danielkhen.websocket.exception.UserNotFoundException;
 import com.danielkhen.websocket.user.User;
 import com.danielkhen.websocket.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +30,17 @@ public class AuthService {
      *
      * @param input The SignupRequestDTO containing user registration details.
      * @return The newly created User entity.
+     * @throws IllegalArgumentException if the nickname or email is already taken.
      */
     public User signup(SignupRequestDTO input) {
+        // Validate nickname and email
+        if (userRepository.existsByNickName(input.getNickName())) {
+            throw new UserAlreadyExistsException("Nickname already exists");
+        }
+        if (userRepository.existsByEmail(input.getEmail())) {
+            throw new UserAlreadyExistsException("Email already exists");
+        }
+
         // Create a new User entity from the input data
         User user = User.builder()
                 .nickName(input.getNickName())

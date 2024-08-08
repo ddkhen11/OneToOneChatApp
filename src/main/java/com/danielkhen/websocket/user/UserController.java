@@ -69,7 +69,6 @@ public class UserController {
             List<User> users = userService.findConnectedUsers();
             return ResponseEntity.ok(users);
         } catch (Exception e) {
-            // Log the error
             System.err.println("Error retrieving connected users: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
